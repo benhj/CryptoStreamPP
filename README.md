@@ -1,5 +1,5 @@
-Seekable encrypted file streams for c++
-=======================================
+Encrypted, seekable, file streams for c++
+=========================================
 
 CryptoStream++ provides a set of wrappers around the Crypto++ api  
 for creating easy to use encrypted file streams 
