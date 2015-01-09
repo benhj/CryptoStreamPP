@@ -60,19 +60,19 @@ namespace cryptostreampp
         /// has key and IV been initialized yet?
 #ifdef STATIC_VARS
         static 
-#endif;
+#endif
         bool m_init; 
 
         /// 256 bit encryption / decryption key
 #ifdef STATIC_VARS
         static 
-#endif;
+#endif
         uint8_t g_bigKey[32]; 
 
         /// 256 bit IV
 #ifdef STATIC_VARS
         static 
-#endif;
+#endif
         uint8_t g_bigIV[32];  
 
       private:
@@ -104,8 +104,11 @@ namespace cryptostreampp
 
     inline
     IByteTransformer::IByteTransformer(EncryptionProperties const &encProps)
-      : m_init(false)
-      , m_props(encProps)
+      : 
+#ifndef STATIC_VARS
+      m_init(false),
+#endif
+      m_props(encProps)
 
     {
     }
