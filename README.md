@@ -13,3 +13,12 @@ Supports
 Developed in concert with [TeaSafe](https://github.com/benhj/teasafe), an encrypted filesystem.
 
 See example.cpp
+
+Building
+--------
+
+For example:
+
+`clang++ -std=c++11 example.cpp -lcryptopp -o example`
+
+Note: Requires libcrypto++ to be installed
