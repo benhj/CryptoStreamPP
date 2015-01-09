@@ -1,28 +1,15 @@
 Encrypted, seekable, file streams for c++
 =========================================
 
-CryptoStream++ provides a set of wrappers around the Crypto++ API that can be
-used to create encrypted file streams that can be used in place of standard std::fstream(s).
+CryptoStream++ provides a set of wrappers around the 
+[Crypto++ API](http://www.cryptopp.com) that can be
+used to create encrypted file streams in place of standard std::fstream(s).
 
-Algorithm support
------------------
+Supports
 
-* All the AES candidate ciphers (AES, serpent, etc.).
+* AES [Rijndael], Serpent, CAST-256, RC6, Twofish, MARS, Camellia, RC5, SHACAL2.
 * PBKDF2 for key derivation
 
-Why?
-----
+Developed in concert with [TeaSafe](https://github.com/benhj/teasafe), an encrypted filesystem.
 
-From a programming standpoint, 
-random file access over encrypted files seemed to me to be non-trivial.  
-A set of easy to use seekable C++ file streams supporting seekable 
-access seemed to be lacking; although APIs like Crypto++, Botan, etc.
-exist, they require a bit of a learning curve to properly integrate.
-
-Perhaps you might be interested in this too
--------------------------------------------
-
-I developed these wrappers in concert with TeaSafe, an encrypted filesystem 
-(in many ways similar to TrueCrypt). TeaSafe utilizes CryptoStream++ 
-as the underlying cryptographic file API.
-
+See example.cpp

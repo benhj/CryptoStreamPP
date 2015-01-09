@@ -1,5 +1,5 @@
 /*
-  Copyright (c) <2014>, <BenHJ>
+  Copyright (c) <22015>, <BenHJ>
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -26,54 +26,30 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+/// For generating a cryptographically secure random number
 
 #pragma once
 
-#include "CryptoByteTransformer.hpp"
-#include "NullByteTransformer.hpp"
-#include "EncryptionProperties.hpp"
+#include <random>
 
-#include "cryptopp/aes.h"
-#include "cryptopp/camellia.h"
-#include "cryptopp/mars.h"
-#include "cryptopp/rc5.h"
-#include "cryptopp/rc6.h"
-#include "cryptopp/serpent.h"
-#include "cryptopp/shacal2.h"
-#include "cryptopp/twofish.h"
-#include "cryptopp/cast.h"
-
-#include <memory>
-
-#define BUILD_CIPHER(X) \
-  return std::make_shared<CryptoByteTransformer<CryptoPP::X> >(props);     
+#include <functional>
 
 namespace cryptostreampp
 {
 
-    inline
-    std::shared_ptr<IByteTransformer> buildCipherType(EncryptionProperties const &props)
+    /**
+     * @brief  generates a secure 64 bit random number;
+     * will error out if not enough entropy
+     * @return a 64 bit random number
+     */
+    uint64_t crypto_random()
     {
-        if(props.cipher == 2) {
-            BUILD_CIPHER(Twofish);
-        } else if(props.cipher == 3) {
-            BUILD_CIPHER(Serpent);
-        } else if(props.cipher == 4) {
-            BUILD_CIPHER(RC6);
-        } else if(props.cipher == 5) {
-            BUILD_CIPHER(MARS);
-        } else if(props.cipher == 6) {
-            BUILD_CIPHER(CAST256);
-        } else if(props.cipher == 7) {
-            BUILD_CIPHER(Camellia);
-        } else if(props.cipher == 8) {
-            BUILD_CIPHER(RC5);
-        } else if(props.cipher == 9) {
-            BUILD_CIPHER(SHACAL2);
-        } else if(props.cipher == 0) {
-            return std::make_shared<NullByteTransformer>(props);
-        } else {
-            BUILD_CIPHER(AES);
-        }
+        std::random_device rd;
+        std::uniform_int_distribution<uint64_t> dis;
+        std::function<uint64_t()> gen = std::bind(dis, std::ref(rd));
+        return gen();
     }
+
 }
+
+
