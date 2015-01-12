@@ -4,6 +4,10 @@ Encrypted, seekable, file streams for c++
 CryptoStream++ provides a set of wrappers around the 
 [Crypto++ API](http://www.cryptopp.com) that can be
 used to create encrypted file streams in place of standard std::fstream(s).
+Uses CTR mode. 
+
+Note: there is nothing special about the file format. The user will need 
+to take care of remembering the initialization values as well as the password.
 
 Supports
 
