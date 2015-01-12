@@ -64,16 +64,20 @@ int main()
     // move the stream to position 7 and overwrite world with universe
     stream.seekp(7);
     stream.write("Universe!", 9);
+
+    // test stream output
+    stream << "What!";
+
     stream.flush();
 
     // now seek to beginning and read in what we wrote
     {
         stream.seekg(0);
-        char buffer[17];
-        stream.read(buffer, 16);
-        buffer[16] = '\0';
+        char buffer[22];
+        stream.read(buffer, 21);
+        buffer[21] = '\0';
 
-        // Should print out "Hello, Universe!""
+        // Should print out "Hello, Universe!What!""
         std::cout<<buffer<<std::endl;
     }
 

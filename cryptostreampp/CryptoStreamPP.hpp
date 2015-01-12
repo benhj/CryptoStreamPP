@@ -35,6 +35,7 @@
 
 #include <functional>
 #include <memory>
+#include <sstream>
   
 #include <fstream>
 #include <string>
@@ -58,6 +59,7 @@ namespace cryptostreampp
         CryptoStreamPP& write(char const * buf, std::streamsize const n);
         void open(std::string const &path,
                   std::ios::openmode mode = std::ios::out | std::ios::binary);
+
       private:
         CryptoStreamPP();
         ByteTransformerPtr m_byteTransformer;
@@ -96,9 +98,7 @@ namespace cryptostreampp
         out.resize(n);
         std::ios_base::streamoff start = std::fstream::tellp();
         m_byteTransformer->encrypt((char*)buf, &out.front(), start, n);
-        if(std::fstream::write(&out.front(), n).bad()) {
-            return *this;
-        }
+        (void)std::fstream::write(&out.front(), n);
         return *this;
     }
 
@@ -109,5 +109,21 @@ namespace cryptostreampp
     {
         std::fstream::open(path.c_str(), mode);
     }
+
+    CryptoStreamPP& operator << (CryptoStreamPP& out, 
+                                 char const * buf)
+    {
+        std::stringstream ss;
+        ss << buf;
+        std::streamsize const n = ss.str().size();
+        return out.write(buf, n);
+    }
+
+    // CryptoStreamPP& operator >> (CryptoStreamPP& in, 
+    //                              char const * buf)
+    // {
+    //     return in;
+    // }
+
 }
 

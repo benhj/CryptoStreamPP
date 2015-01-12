@@ -110,6 +110,5 @@ namespace cryptostreampp
         decryptor.Seek(startPosition);
         decryptor.ProcessData((uint8_t*)out, (uint8_t*)in, length);
     }
-
 }
 
