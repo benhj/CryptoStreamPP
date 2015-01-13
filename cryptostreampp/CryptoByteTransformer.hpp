@@ -51,10 +51,10 @@ namespace cryptostreampp
         void doEncrypt(char *in, char *out, std::ios_base::streamoff startPosition, long length);
         void doDecrypt(char *in, char *out, std::ios_base::streamoff startPosition, long length);
 
-        /// for initializing the key and IV
-        std::once_flag m_ivFlag;
+        /// lazily initializes the crypto system
+        void initCrypto();
 
-        /// for making sure that cipher is only initialized once
+        /// for making sure that crypto system is initialized just the once
         std::once_flag m_initFlag;
 
         /// The encryption algorithm used
@@ -74,13 +74,21 @@ namespace cryptostreampp
 
     template <typename CIPHER>
     inline
+    void
+    CryptoByteTransformer<CIPHER>::initCrypto() 
+    {
+        IByteTransformer::generateKeyAndIV();
+        m_cipher.SetKeyWithIV(IByteTransformer::g_bigKey, 
+                              sizeof(IByteTransformer::g_bigKey), 
+                              IByteTransformer::g_bigIV);
+    }
+
+    template <typename CIPHER>
+    inline
     CIPHER &
     CryptoByteTransformer<CIPHER>::cipherInstance()
     {
-        std::call_once(m_ivFlag, [this](){ IByteTransformer::generateKeyAndIV(); });
-        std::call_once(m_initFlag, [this](){ m_cipher.SetKeyWithIV(IByteTransformer::g_bigKey, 
-                                             sizeof(IByteTransformer::g_bigKey), 
-                                             IByteTransformer::g_bigIV); });
+        std::call_once(m_initFlag, [this](){ initCrypto(); });
         return m_cipher;
     }
 
