@@ -35,15 +35,17 @@
 #include "EncryptionProperties.hpp"
 
 #include "cryptopp/aes.h"
+#include "cryptopp/blowfish.h"
 #include "cryptopp/camellia.h"
+#include "cryptopp/cast.h"
+#include "cryptopp/ccm.h"
 #include "cryptopp/mars.h"
 #include "cryptopp/rc5.h"
 #include "cryptopp/rc6.h"
 #include "cryptopp/serpent.h"
 #include "cryptopp/shacal2.h"
 #include "cryptopp/twofish.h"
-#include "cryptopp/cast.h"
-#include "cryptopp/ccm.h"
+
 
 #include <memory>
 
@@ -72,6 +74,8 @@ namespace cryptostreampp
             BUILD_CIPHER(CryptoPP::CTR_Mode<CryptoPP::RC5>::Encryption);
         } else if(props.cipher == Algorithm::SHACAL2) {
             BUILD_CIPHER(CryptoPP::CTR_Mode<CryptoPP::SHACAL2>::Encryption);
+        } else if(props.cipher == Algorithm::Blowfish) {
+            BUILD_CIPHER(CryptoPP::CTR_Mode<CryptoPP::Blowfish>::Encryption);
         } else if(props.cipher == Algorithm::NONE) {
             return std::make_shared<NullByteTransformer>(props);
         } else {

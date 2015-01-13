@@ -39,5 +39,6 @@ namespace cryptostreampp {
                                Camellia, 
                                RC5, 
                                SHACAL2, 
+                               Blowfish,
                                NONE};
 }
