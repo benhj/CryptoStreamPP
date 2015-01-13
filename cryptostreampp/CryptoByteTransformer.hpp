@@ -32,6 +32,7 @@
 #include "IByteTransformer.hpp"
 #include <cstdint>
 #include <ios>
+#include <mutex>
 #include <string>
 
 namespace cryptostreampp
@@ -43,8 +44,6 @@ namespace cryptostreampp
       public:
         CryptoByteTransformer(EncryptionProperties const &encProps);
 
-        void init();
-
         ~CryptoByteTransformer();
 
       private:
@@ -52,10 +51,16 @@ namespace cryptostreampp
         void doEncrypt(char *in, char *out, std::ios_base::streamoff startPosition, long length);
         void doDecrypt(char *in, char *out, std::ios_base::streamoff startPosition, long length);
 
+        /// for initializing the key and IV
+        std::once_flag m_ivFlag;
+
+        /// for making sure that cipher is only initialized once
+        std::once_flag m_initFlag;
+
         /// The encryption algorithm used
         CIPHER m_cipher;
 
-        /// Lazily initialize and return a reference to the CIPHER instance
+        /// Lazily initialize the key and iv and return the cipher instance
         CIPHER &cipherInstance();
 
 
@@ -72,23 +77,11 @@ namespace cryptostreampp
     CIPHER &
     CryptoByteTransformer<CIPHER>::cipherInstance()
     {
-        static bool inited = false;
-        if(!inited) {
-            m_cipher.SetKeyWithIV(IByteTransformer::g_bigKey, 
-                                  sizeof(IByteTransformer::g_bigKey), 
-                                  IByteTransformer::g_bigIV);
-            inited = true;
-        }
-       
+        std::call_once(m_ivFlag, [this](){ IByteTransformer::generateKeyAndIV(); });
+        std::call_once(m_initFlag, [this](){ m_cipher.SetKeyWithIV(IByteTransformer::g_bigKey, 
+                                             sizeof(IByteTransformer::g_bigKey), 
+                                             IByteTransformer::g_bigIV); });
         return m_cipher;
-    }
-
-    template <typename CIPHER>
-    inline
-    void
-    CryptoByteTransformer<CIPHER>::init()
-    {
-        IByteTransformer::generateKeyAndIV();
     }
 
     template <typename CIPHER>

@@ -39,12 +39,11 @@
 namespace cryptostreampp
 {
 
+    
     class NullByteTransformer : public IByteTransformer
     {
       public:
         NullByteTransformer(EncryptionProperties const &encProps);
-
-        void init();
 
         ~NullByteTransformer();
 
@@ -59,12 +58,6 @@ namespace cryptostreampp
     inline
     NullByteTransformer::NullByteTransformer(EncryptionProperties const &encProps)
       : IByteTransformer(encProps)
-    {
-    }
-
-    inline
-    void
-    NullByteTransformer::init()
     {
     }
 

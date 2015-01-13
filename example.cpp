@@ -2,6 +2,17 @@
 #include "cryptostreampp/CryptoStreamPP.hpp"
 #include "cryptostreampp/RandomNumberGenerator.hpp"
 
+#include "cryptopp/aes.h"
+#include "cryptopp/camellia.h"
+#include "cryptopp/mars.h"
+#include "cryptopp/rc5.h"
+#include "cryptopp/rc6.h"
+#include "cryptopp/serpent.h"
+#include "cryptopp/shacal2.h"
+#include "cryptopp/twofish.h"
+#include "cryptopp/cast.h"
+#include "cryptopp/ccm.h"
+
 #include <iosfwd>
 #include <iostream>
 
@@ -19,12 +30,11 @@ int main()
     props.iv3 = crypto_random();
     props.iv4 = crypto_random();
 
-    // What cipher do we require?
-    props.cipher = cryptostreampp::Algorithm::Serpent;
+    // What cipher function do we require?
+    props.cipher = Algorithm::Serpent;
 
     // the password used for encryption / decryption
     props.password = std::string("password");
-
 
     /*==========  The main cryptostreampp usage  ==========*/
     

@@ -74,8 +74,6 @@ namespace cryptostreampp
         : std::fstream(path.c_str(), mode)
         , m_byteTransformer(buildCipherType(encProps))
     {
-        // setup cipher
-        m_byteTransformer->init();
     }
 
     inline
