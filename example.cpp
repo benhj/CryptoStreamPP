@@ -65,19 +65,19 @@ int main()
     stream.seekp(7);
     stream.write("Universe!", 9);
 
-    // test stream output
-    stream << "What!";
+    // test stream output; how to add >> support?.
+    //stream << "What!";
 
     stream.flush();
 
     // now seek to beginning and read in what we wrote
     {
         stream.seekg(0);
-        char buffer[22];
-        stream.read(buffer, 21);
-        buffer[21] = '\0';
+        char buffer[17];
+        stream.read(buffer, 16);
+        buffer[16] = '\0';
 
-        // Should print out "Hello, Universe!What!""
+        // Should print out "Hello, Universe!""
         std::cout<<buffer<<std::endl;
     }
 

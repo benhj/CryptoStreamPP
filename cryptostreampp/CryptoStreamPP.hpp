@@ -61,6 +61,8 @@ namespace cryptostreampp
                   std::ios::openmode mode = std::ios::out | std::ios::binary);
 
       private:
+        CryptoStreamPP& doRead(char * const buf, std::streamsize const n);
+        CryptoStreamPP& doWrite(char const * buf, std::streamsize const n);
         CryptoStreamPP();
         ByteTransformerPtr m_byteTransformer;
     };
@@ -80,6 +82,21 @@ namespace cryptostreampp
     CryptoStreamPP&
     CryptoStreamPP::read(char * const buf, std::streamsize const n)
     {
+        return doRead(buf, n);
+    }
+
+    inline
+    CryptoStreamPP&
+    CryptoStreamPP::write(char const * buf, std::streamsize const n)
+    {
+        return doWrite(buf, n);
+    }
+
+
+    inline
+    CryptoStreamPP&
+    CryptoStreamPP::doRead(char * const buf, std::streamsize const n)
+    {
         std::ios_base::streamoff start = std::fstream::tellg();
         std::vector<char> in;
         in.resize(n);
@@ -92,7 +109,7 @@ namespace cryptostreampp
 
     inline
     CryptoStreamPP&
-    CryptoStreamPP::write(char const * buf, std::streamsize const n)
+    CryptoStreamPP::doWrite(char const * buf, std::streamsize const n)
     {
         std::vector<char> out;
         out.resize(n);
@@ -104,26 +121,9 @@ namespace cryptostreampp
 
     inline
     void
-    CryptoStreamPP::open(std::string const &path,
-                         std::ios::openmode mode)
+    CryptoStreamPP::open(std::string const &path, std::ios::openmode mode)
     {
         std::fstream::open(path.c_str(), mode);
     }
-
-    CryptoStreamPP& operator << (CryptoStreamPP& out, 
-                                 char const * buf)
-    {
-        std::stringstream ss;
-        ss << buf;
-        std::streamsize const n = ss.str().size();
-        return out.write(buf, n);
-    }
-
-    // CryptoStreamPP& operator >> (CryptoStreamPP& in, 
-    //                              char const * buf)
-    // {
-    //     return in;
-    // }
-
 }
 

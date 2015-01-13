@@ -76,8 +76,8 @@ namespace cryptostreampp
         uint8_t g_bigIV[32];  
 
       private:
-        virtual void doEncrypt(char *in, char *out, std::ios_base::streamoff startPosition, long length) const = 0;
-        virtual void doDecrypt(char *in, char *out, std::ios_base::streamoff startPosition, long length) const = 0;
+        virtual void doEncrypt(char *in, char *out, std::ios_base::streamoff startPosition, long length) = 0;
+        virtual void doDecrypt(char *in, char *out, std::ios_base::streamoff startPosition, long length) = 0;
 
       protected:
 

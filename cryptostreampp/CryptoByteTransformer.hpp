@@ -30,16 +30,6 @@
 
 #include "EncryptionProperties.hpp"
 #include "IByteTransformer.hpp"
-#include "cryptopp/aes.h"
-#include "cryptopp/camellia.h"
-#include "cryptopp/mars.h"
-#include "cryptopp/rc5.h"
-#include "cryptopp/rc6.h"
-#include "cryptopp/serpent.h"
-#include "cryptopp/shacal2.h"
-#include "cryptopp/twofish.h"
-#include "cryptopp/cast.h"
-#include "cryptopp/ccm.h"
 #include <cstdint>
 #include <ios>
 #include <string>
@@ -47,7 +37,7 @@
 namespace cryptostreampp
 {
 
-    template <typename Algorithm>
+    template <typename CIPHER>
     class CryptoByteTransformer : public IByteTransformer
     {
       public:
@@ -58,57 +48,77 @@ namespace cryptostreampp
         ~CryptoByteTransformer();
 
       private:
-
         CryptoByteTransformer(); // not required
+        void doEncrypt(char *in, char *out, std::ios_base::streamoff startPosition, long length);
+        void doDecrypt(char *in, char *out, std::ios_base::streamoff startPosition, long length);
 
-        void doEncrypt(char *in, char *out, std::ios_base::streamoff startPosition, long length) const;
-        void doDecrypt(char *in, char *out, std::ios_base::streamoff startPosition, long length) const;
+        /// The encryption algorithm used
+        CIPHER m_cipher;
+
+        /// Lazily initialize and return a reference to the CIPHER instance
+        CIPHER &cipherInstance();
+
+
     };
 
-    template <typename T>
-    CryptoByteTransformer<T>::CryptoByteTransformer(EncryptionProperties const &encProps)
+    template <typename CIPHER>
+    CryptoByteTransformer<CIPHER>::CryptoByteTransformer(EncryptionProperties const &encProps)
       : IByteTransformer(encProps)
     {
     }
 
-    template <typename T>
+    template <typename CIPHER>
+    inline
+    CIPHER &
+    CryptoByteTransformer<CIPHER>::cipherInstance()
+    {
+        static bool inited = false;
+        if(!inited) {
+            m_cipher.SetKeyWithIV(IByteTransformer::g_bigKey, 
+                                  sizeof(IByteTransformer::g_bigKey), 
+                                  IByteTransformer::g_bigIV);
+            inited = true;
+        }
+       
+        return m_cipher;
+    }
+
+    template <typename CIPHER>
     inline
     void
-    CryptoByteTransformer<T>::init()
+    CryptoByteTransformer<CIPHER>::init()
     {
         IByteTransformer::generateKeyAndIV();
     }
 
-    template <typename T>
-    CryptoByteTransformer<T>::~CryptoByteTransformer()
+    template <typename CIPHER>
+    CryptoByteTransformer<CIPHER>::~CryptoByteTransformer()
     {
 
     }
 
-    template <typename T>
+    template <typename CIPHER>
     inline
     void 
-    CryptoByteTransformer<T>::doEncrypt(char *in, char *out, std::ios_base::streamoff startPosition, long length) const
+    CryptoByteTransformer<CIPHER>::doEncrypt(char *in, 
+                                             char *out, 
+                                             std::ios_base::streamoff startPosition, 
+                                             long length) 
     {
-        typename CryptoPP::CTR_Mode<T>::Encryption encryptor;
-        encryptor.SetKeyWithIV(IByteTransformer::g_bigKey, 
-                               sizeof(IByteTransformer::g_bigKey), 
-                               IByteTransformer::g_bigIV);
-        encryptor.Seek(startPosition);
-        encryptor.ProcessData((uint8_t*)out, (uint8_t*)in, length);
+        cipherInstance().Seek(startPosition);
+        cipherInstance().ProcessData((uint8_t*)out, (uint8_t*)in, length);
     }
 
-    template <typename T>
+    template <typename CIPHER>
     inline
     void 
-    CryptoByteTransformer<T>::doDecrypt(char *in, char *out, std::ios_base::streamoff startPosition, long length) const
+    CryptoByteTransformer<CIPHER>::doDecrypt(char *in, 
+                                             char *out, 
+                                             std::ios_base::streamoff startPosition, 
+                                             long length) 
     {
-        typename CryptoPP::CTR_Mode<T>::Decryption decryptor;
-        decryptor.SetKeyWithIV(IByteTransformer::g_bigKey, 
-                                  sizeof(IByteTransformer::g_bigKey), 
-                                  IByteTransformer::g_bigIV);
-        decryptor.Seek(startPosition);
-        decryptor.ProcessData((uint8_t*)out, (uint8_t*)in, length);
+        cipherInstance().Seek(startPosition);
+        cipherInstance().ProcessData((uint8_t*)out, (uint8_t*)in, length);
     }
 }
 
