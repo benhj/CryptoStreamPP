@@ -112,9 +112,9 @@ namespace cryptostreampp
             props.keyBytes = 24; // 192 bit
             BUILD_CIPHER(CryptoPP::CTR_Mode<CryptoPP::DES_EDE3>::Encryption);
         } else if(props.cipher == Algorithm::NONE) {
-            props.keyBytes = 32; // 256 bit
             return std::make_shared<NullByteTransformer>(props);
         } else {
+            props.keyBytes = 32; // 256 bit
             BUILD_CIPHER(CryptoPP::CTR_Mode<CryptoPP::AES>::Encryption);
         }
     }
