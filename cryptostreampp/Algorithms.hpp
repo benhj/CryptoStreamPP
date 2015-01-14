@@ -40,5 +40,12 @@ namespace cryptostreampp {
                                RC5, 
                                SHACAL2, 
                                Blowfish,
+                               SKIPJACK,
+                               IDEA,
+                               SEED,
+                               TEA,
+                               XTEA,
+                               DES_EDE2,
+                               DES_EDE3,
                                NONE};
 }

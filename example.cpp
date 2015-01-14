@@ -20,7 +20,7 @@ int main()
     props.iv4 = crypto_random();
 
     // What cipher function do we require?
-    props.cipher = Algorithm::Blowfish;
+    props.cipher = Algorithm::DES_EDE3;
 
     // the password used for encryption / decryption
     props.password = std::string("password");
