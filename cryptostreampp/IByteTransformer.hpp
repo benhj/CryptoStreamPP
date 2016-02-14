@@ -1,5 +1,5 @@
 /*
-  Copyright (c) <2015>, <BenHJ>
+  Copyright (c) <2015-2016>, <BenHJ>
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -40,7 +40,6 @@
 #include <string>
 
 // If static var initialization, comment this back in
-// #define STATIC_VARS
 
 namespace cryptostreampp
 {
@@ -48,6 +47,7 @@ namespace cryptostreampp
     class IByteTransformer
     {
       public:
+        IByteTransformer() = delete;
         IByteTransformer(EncryptionProperties const &encProps);
 
         void encrypt(char *in, char *out, std::ios_base::streamoff startPosition, long length);
@@ -56,22 +56,22 @@ namespace cryptostreampp
         virtual ~IByteTransformer();
 
         /// has key and IV been initialized yet?
-#ifdef STATIC_VARS
-        static 
+#ifdef STATIC_CRYPTOSTREAMPP_VAR
+        static
 #endif
-        bool m_init; 
+        bool m_init;
 
         /// 256 bit encryption / decryption key
-#ifdef STATIC_VARS
-        static 
+#ifdef STATIC_CRYPTOSTREAMPP_VAR
+        static
 #endif
-        uint8_t g_bigKey[32]; 
+        uint8_t g_bigKey[32];
 
         /// 256 bit IV
-#ifdef STATIC_VARS
-        static 
+#ifdef STATIC_CRYPTOSTREAMPP_VAR
+        static
 #endif
-        uint8_t g_bigIV[32];  
+        uint8_t g_bigIV[32];
 
       private:
         virtual void doEncrypt(char *in, char *out, std::ios_base::streamoff startPosition, long length) = 0;
@@ -102,8 +102,8 @@ namespace cryptostreampp
 
     inline
     IByteTransformer::IByteTransformer(EncryptionProperties const &encProps)
-      : 
-#ifndef STATIC_VARS
+      :
+#ifndef STATIC_CRYPTOSTREAMPP_VAR
       m_init(false),
 #endif
       m_props(encProps)
@@ -118,7 +118,7 @@ namespace cryptostreampp
     }
 
     inline
-    void 
+    void
     IByteTransformer::generateKeyAndIV()
     {
         //
@@ -145,9 +145,9 @@ namespace cryptostreampp
 
             // derive the key using a million iterations
             CryptoPP::PKCS5_PBKDF2_HMAC<CryptoPP::SHA512> pbkdf2;
-            pbkdf2.DeriveKey(g_bigKey, sizeof(g_bigKey), 0, 
-                             (const unsigned char*)&m_props.password.front(), m_props.password.length(), 
-                             g_bigIV, sizeof(g_bigIV), 
+            pbkdf2.DeriveKey(g_bigKey, sizeof(g_bigKey), 0,
+                             (const unsigned char*)&m_props.password.front(), m_props.password.length(),
+                             g_bigIV, sizeof(g_bigIV),
                              1000000);
 
             IByteTransformer::m_init = true;
@@ -168,4 +168,3 @@ namespace cryptostreampp
         this->doDecrypt(in, out, startPosition, length);
     }
 }
-

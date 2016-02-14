@@ -26,6 +26,6 @@ Building
 
 For example:
 
-`clang++ -std=c++11 example.cpp -lcryptopp -o example`
+`clang++ -std=c++11 -I/usr/local/include -L/usr/local/lib example.cpp -lcryptopp -o example`
 
 Note: Requires libcrypto++ to be installed
