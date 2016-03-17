@@ -83,7 +83,7 @@ namespace cryptostreampp
         EncryptionProperties m_props;
 
         /// build the key using scrypt and big IV
-        void generateKeyAndIV();
+        void generateKeyAndIV(bool const alwaysInit = false);
     };
 
     namespace {
@@ -119,12 +119,12 @@ namespace cryptostreampp
 
     inline
     void
-    IByteTransformer::generateKeyAndIV()
+    IByteTransformer::generateKeyAndIV(bool const alwaysInit)
     {
         //
         // The following g_bigKey generation algorithm uses scrypt, with N = 2^20; r = 8; p = 1
         //
-        if (!m_init) {
+        if (!m_init || alwaysInit) {
 
             // create a 256 bit IV out of 4 individual 64 bit IVs
             uint8_t salt[8];

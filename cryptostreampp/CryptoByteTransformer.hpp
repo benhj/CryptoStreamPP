@@ -43,7 +43,8 @@ namespace cryptostreampp
     {
       public:
         CryptoByteTransformer() = delete;
-        CryptoByteTransformer(EncryptionProperties const &encProps);
+        CryptoByteTransformer(EncryptionProperties const &encProps,
+                              bool const alwaysInitKey = true);
 
         ~CryptoByteTransformer();
 
@@ -64,12 +65,17 @@ namespace cryptostreampp
         /// Lazily initialize the key and iv and return the cipher instance
         CIPHER &cipherInstance();
 
+        /// Always initialize the key no matter what
+        bool m_alwaysInitKey;
+
 
     };
 
     template <typename CIPHER>
-    CryptoByteTransformer<CIPHER>::CryptoByteTransformer(EncryptionProperties const &encProps)
+    CryptoByteTransformer<CIPHER>::CryptoByteTransformer(EncryptionProperties const &encProps,
+                                                         bool const alwaysInitKey)
       : IByteTransformer(encProps)
+      , m_alwaysInitKey(alwaysInitKey)
     {
     }
 
@@ -78,7 +84,8 @@ namespace cryptostreampp
     void
     CryptoByteTransformer<CIPHER>::initCrypto()
     {
-        IByteTransformer::generateKeyAndIV();
+        IByteTransformer::generateKeyAndIV(m_alwaysInitKey);
+        m_alwaysInitKey = false;
         m_cipher.SetKeyWithIV(IByteTransformer::g_bigKey,
                               m_props.keyBytes,
                               IByteTransformer::g_bigIV);

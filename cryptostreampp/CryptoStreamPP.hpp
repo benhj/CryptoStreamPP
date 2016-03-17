@@ -54,6 +54,7 @@ namespace cryptostreampp
         CryptoStreamPP() = delete;
         CryptoStreamPP(std::string const & path,
                        EncryptionProperties & encProps,
+                       bool const alwaysInitKey = false,
                        std::ios::openmode mode = std::ios::out | std::ios::binary);
 
         CryptoStreamPP& read(char * const buf, std::streamsize const n);
@@ -64,15 +65,16 @@ namespace cryptostreampp
       private:
         CryptoStreamPP& doRead(char * const buf, std::streamsize const n);
         CryptoStreamPP& doWrite(char const * buf, std::streamsize const n);
-        ByteTransformerPtr m_byteTransformer;
+        ByteTransformerPtr m_byteTransformer;;
     };
 
     inline
     CryptoStreamPP::CryptoStreamPP(std::string const &path,
                                    EncryptionProperties & encProps,
+                                   bool const alwaysInitKey,
                                    std::ios::openmode mode)
         : std::fstream(path.c_str(), mode)
-        , m_byteTransformer(buildCipherType(encProps))
+        , m_byteTransformer(buildCipherType(encProps, alwaysInitKey))
     {
     }
 

@@ -55,13 +55,13 @@
 #include <memory>
 
 #define BUILD_CIPHER(X) \
-  return std::make_shared<CryptoByteTransformer<X> > (props);     
+  return std::make_shared<CryptoByteTransformer<X> > (props, alwaysInitKey);     
 
 namespace cryptostreampp
 {
 
     inline
-    std::shared_ptr<IByteTransformer> buildCipherType(EncryptionProperties &props)
+    std::shared_ptr<IByteTransformer> buildCipherType(EncryptionProperties &props, bool const alwaysInitKey = true)
     {
         if(props.cipher == Algorithm::Twofish) {
             props.keyBytes = 32; // 256 bit
