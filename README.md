@@ -17,7 +17,7 @@ Skipjack, SHACAL-2
 
 Uses Crypto++'s implementation of PBKDF2 for key derivation (a million rounds).
 
-Developed in concert with [TeaSafe](https://github.com/benhj/teasafe), an encrypted filesystem.
+Developed in concert with [KnoxCrypt](https://github.com/benhj/knoxcrypt), an encrypted filesystem.
 
 See example.cpp
 
