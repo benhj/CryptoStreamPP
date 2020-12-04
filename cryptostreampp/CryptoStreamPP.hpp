@@ -1,5 +1,5 @@
 /*
-  Copyright (c) <2015-2016>, <BenHJ>
+  Copyright (c) <2015-present>, <BenHJ>
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,6 @@
 #include "EncryptionProperties.hpp"
 #include "IByteTransformer.hpp"
 
-
 #include <functional>
 #include <memory>
 #include <sstream>
@@ -54,13 +53,13 @@ namespace cryptostreampp
         CryptoStreamPP() = delete;
         CryptoStreamPP(std::string const & path,
                        EncryptionProperties & encProps,
-                       bool const alwaysInitKey = false,
-                       std::ios::openmode mode = std::ios::out | std::ios::binary);
+                       std::ios::openmode mode = std::ios::out | std::ios::in | std::ios::binary,
+                       bool const alwaysInitKey = false);
 
         CryptoStreamPP& read(char * const buf, std::streamsize const n);
         CryptoStreamPP& write(char const * buf, std::streamsize const n);
         void open(std::string const &path,
-                  std::ios::openmode mode = std::ios::out | std::ios::binary);
+                  std::ios::openmode mode = std::ios::out | std::ios::in | std::ios::binary);
 
       private:
         CryptoStreamPP& doRead(char * const buf, std::streamsize const n);
@@ -71,8 +70,8 @@ namespace cryptostreampp
     inline
     CryptoStreamPP::CryptoStreamPP(std::string const &path,
                                    EncryptionProperties & encProps,
-                                   bool const alwaysInitKey,
-                                   std::ios::openmode mode)
+                                   std::ios::openmode mode,
+                                   bool const alwaysInitKey)
         : std::fstream(path.c_str(), mode)
         , m_byteTransformer(buildCipherType(encProps, alwaysInitKey))
     {

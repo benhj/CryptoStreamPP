@@ -30,8 +30,8 @@
 
 #include "EncryptionProperties.hpp"
 
-#include "cryptopp/pwdbased.h"
-#include "cryptopp/sha.h"
+#include <cryptopp/pwdbased.h>
+#include <cryptopp/sha.h>
 
 #include <algorithm>
 #include <iterator>
@@ -135,7 +135,6 @@ namespace cryptostreampp
             convertUInt64ToInt8Array(m_props.iv2, saltB);
             convertUInt64ToInt8Array(m_props.iv3, saltC);
             convertUInt64ToInt8Array(m_props.iv4, saltD);
-
 
             // construct the big IV
             (void)std::copy(salt,  salt + 8 , g_bigIV);
